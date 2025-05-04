@@ -4,6 +4,8 @@ from auth.auth_middleware import verify_id
 import requests
 import csv
 import os
+import json
+import re
 from auth.auth_middleware import token_required
 
 ALPHA_ADVANTAGE_KEY = os.environ.get("ALPHA_ADVANTAGE_KEY", None)
@@ -21,30 +23,45 @@ def after_request(response):
     
 @search.route('search/<searchTerm>', methods=['GET'])
 def ticker_search(searchTerm):
-    url = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + searchTerm + "&apikey=" + ALPHA_ADVANTAGE_KEY
-    r = requests.get(url)
-    data = r.json()
-    return data
+    #url = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + searchTerm + "&apikey=" + ALPHA_ADVANTAGE_KEY
+    #r = requests.get(url)
+    #data = r.json()
+    #return data
+    with open('data/search_results_ibm.json', 'r') as file:
+        data = json.load(file)
+        print(data['bestMatches'])
+        cleaned_data = [
+            {re.sub(r"^\d+\.\s*", "", k): v for k, v in match.items()}
+            for match in data['bestMatches']
+        ]
+        return cleaned_data
+    
 
 @earnings.route('earnings_calendar', methods=['GET', 'OPTIONS'])
 def earnings_calendar():
-    print(request)
-    url = "https://www.alphavantage.co/query?function=EARNINGS_CALENDAR&horizon=3month&datatype=json&apikey=" + ALPHA_ADVANTAGE_KEY
-    data = ''
-    print(request.headers['Authorization'])
-    with requests.Session() as s:
-        download = s.get(url)
-        decoded_content = download.content.decode('utf-8')
-        cr = csv.reader(decoded_content.splitlines(), delimiter=',')
-        my_list = list(cr)
-        for row in my_list:
-            data += '|'.join(row)
-            data += '~'
-    return data
+    with open('data/earnings_calendar.csv', 'r') as file:
+        x = file.read()
+        print(x)
+        return jsonify(x)
+       
+   
+    #print(request)
+    #url = "https://www.alphavantage.co/query?function=EARNINGS_CALENDAR&horizon=3month&datatype=json&apikey=" + ALPHA_ADVANTAGE_KEY
+    #data = ''
+    #print(request.headers['Authorization'])
+    #with requests.Session() as s:
+    #    download = s.get(url)
+    #    decoded_content = download.content.decode('utf-8')
+    #    cr = csv.reader(decoded_content.splitlines(), delimiter=',')
+    #    my_list = list(cr)
+    #    for row in my_list:
+    #        data += '|'.join(row)
+    #        data += '~'
+    #return data
 
 @timeSeries.route('issuer/<symbol>/timeSeries/weekly', methods=['GET'])
 def time_series_weekly(symbol):
     url = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=" + symbol + "&apikey=" + ALPHA_ADVANTAGE_KEY
-    r = requests.get(url)
+    r = requests.get(url)    
     data = r.json()
     return data
