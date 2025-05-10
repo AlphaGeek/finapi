@@ -19,7 +19,6 @@ def ticker_search(searchTerm):
     #return data
     with open('data/search_results_ibm.json', 'r') as file:
         data = json.load(file)
-        print(data['bestMatches'])
         cleaned_data = [
             {re.sub(r"^\d+\.\s*", "", k): v for k, v in match.items()}
             for match in data['bestMatches']
@@ -30,12 +29,15 @@ def ticker_search(searchTerm):
 def earnings_calendar():
     with open('data/earnings_calendar.csv', 'r') as file:
         x = file.read()
-        print(x)
         return jsonify(x)
        
 @timeSeries.route('issuer/<symbol>/timeSeries/weekly', methods=['GET'])
 def time_series_weekly(symbol):
-    url = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=" + symbol + "&apikey=" + ALPHA_ADVANTAGE_KEY
-    r = requests.get(url)    
-    data = r.json()
-    return data
+    #url = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=" + symbol + "&apikey=" + ALPHA_ADVANTAGE_KEY
+    #r = requests.get(url)    
+    #data = r.json()
+    #return data
+    with open('data/weekly_prices_ibm.json', 'r') as file:
+        data = json.load(file)
+        return data
+    
