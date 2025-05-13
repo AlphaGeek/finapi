@@ -1,14 +1,13 @@
-from flask import Blueprint, jsonify, request, make_response
-from flask_cors import cross_origin
+from flask import Blueprint, jsonify, make_response
 from openai import OpenAI
 import os
 
-open_ai = Blueprint("open_ai", __name__)
+open_ai = Blueprint('open_ai', __name__, url_prefix='/api/v1')
+
 OPENAI_KEY = os.environ.get("OPENAI_KEY", None)
 client = OpenAI(api_key=OPENAI_KEY)
 
-@cross_origin()
-@open_ai.route("/api/v1/question", methods=["GET, OPTIONS"])
+@open_ai.route("question", methods=['GET'])
 def index():
     answer = client.chat.completions.create(
         model="gpt-4o-mini",
