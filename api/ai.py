@@ -5,11 +5,12 @@ import os
 
 open_ai = Blueprint('open_ai', __name__, url_prefix='/api/v1/ai')
 
-OPENAI_KEY = os.getenv("OPENAI_KEY")
-client = OpenAI(api_key=OPENAI_KEY)
 
 @open_ai.route("/askOpenAI", methods=['POST'])
 def openAI():
+    OPENAI_KEY = os.getenv("OPENAI_KEY")
+    client = OpenAI(api_key=OPENAI_KEY)
+
     data = request.json
     answer =  client.chat.completions.create(   
         model="gpt-4",
@@ -29,7 +30,11 @@ def openAI():
 @open_ai.route("/askClaude", methods=['POST'])
 def claude():
     CLAUDE_KEY = os.getenv("CLAUDE_KEY")
+    client = anthropic.Anthropic(
+        api_key=CLAUDE_KEY
+    )
     print(CLAUDE_KEY)
+    
     data = request.json
     message = client.messages.create(
         model="claude-3-7-sonnet-20250219",
