@@ -13,17 +13,21 @@ timeSeries = Blueprint('timeSeries', __name__, url_prefix='/api/v1')
 
 @search.route('search/<searchTerm>', methods=['GET'])
 def ticker_search(searchTerm):
-    #url = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + searchTerm + "&apikey=" + ALPHA_ADVANTAGE_KEY
-    #r = requests.get(url)
-    #data = r.json()
-    #return data
-    with open('data/search_results_ibm.json', 'r') as file:
-        data = json.load(file)
-        cleaned_data = [
+    url = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + searchTerm + "&apikey=" + ALPHA_ADVANTAGE_KEY
+    r = requests.get(url)
+    data = r.json()
+    cleaned_data = [
             {re.sub(r"^\d+\.\s*", "", k): v for k, v in match.items()}
             for match in data['bestMatches']
         ]
-        return cleaned_data
+    return cleaned_data
+    #with open('data/search_results_ibm.json', 'r') as file:
+    #    data = json.load(file)
+    #    cleaned_data = [
+    #        {re.sub(r"^\d+\.\s*", "", k): v for k, v in match.items()}
+    #        for match in data['bestMatches']
+    #    ]
+    #    return cleaned_data
 
 @earnings.route('earnings_calendar', methods=['GET', 'OPTIONS'])
 def earnings_calendar():
