@@ -5,7 +5,7 @@ import os
 import json
 import re
 
-ALPHA_ADVANTAGE_KEY = os.environ.get("ALPHA_ADVANTAGE_KEY", None)
+#ALPHA_ADVANTAGE_KEY = os.environ.get("ALPHA_ADVANTAGE_KEY", None)
 
 earnings = Blueprint('earnings', __name__, url_prefix='/api/v1')
 search = Blueprint('search', __name__, url_prefix='/api/v1')
@@ -13,6 +13,8 @@ timeSeries = Blueprint('timeSeries', __name__, url_prefix='/api/v1')
 
 @search.route('search/<searchTerm>', methods=['GET'])
 def ticker_search(searchTerm):
+    ALPHA_ADVANTAGE_KEY = os.environ.get("ALPHA_ADVANTAGE_KEY", None)
+    print(ALPHA_ADVANTAGE_KEY)
     url = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + searchTerm + "&apikey=" + ALPHA_ADVANTAGE_KEY
     r = requests.get(url)
     data = r.json()

@@ -13,7 +13,7 @@ def openAI():
 
     data = request.json
     answer =  client.chat.completions.create(   
-        model="gpt-4",
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": data['prompt']},
         ],
@@ -33,11 +33,10 @@ def claude():
     client = anthropic.Anthropic(
         api_key=CLAUDE_KEY
     )
-    print(CLAUDE_KEY)
     
     data = request.json
     message = client.messages.create(
-        model="claude-3-7-sonnet-20250219",
+        model="claude-sonnet-4-5-20250929",
         max_tokens=1024,
         messages=[
             {"role": "user", "content": data['prompt']}

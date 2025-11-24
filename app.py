@@ -4,6 +4,10 @@ from api.market_data import earnings, search, timeSeries
 from api.user import user
 from api.ai import open_ai
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .flaskenv file
+load_dotenv()
 
 app = Flask(__name__)
 SECRET_KEY = os.environ.get('GOOGLE_SECRET_KEY')
